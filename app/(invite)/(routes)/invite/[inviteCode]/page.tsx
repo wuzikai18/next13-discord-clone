@@ -1,9 +1,8 @@
-import React from 'react';
 import { redirectToSignIn } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
-import { currentProfile } from '@/lib/current-profile';
 import { db } from '@/lib/db';
+import { currentProfile } from '@/lib/current-profile';
 
 interface InviteCodePageProps {
   params: {
@@ -39,7 +38,7 @@ const InviteCodePage = async ({ params }: InviteCodePageProps) => {
 
   const server = await db.server.update({
     where: {
-      inviteCOde: params?.inviteCode,
+      inviteCOde: params.inviteCode,
     },
     data: {
       members: {
