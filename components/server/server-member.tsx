@@ -9,8 +9,8 @@ import { UserAvatar } from '@/components/user-avatar';
 import { cn } from '@/lib/utils';
 
 interface ServerMemberProps {
-  member: Member & { profile: Profile };
-  server: Server;
+  member: any & { profile: any };
+  server: any;
 }
 
 const roleIconMap = {
@@ -24,7 +24,7 @@ const roleIconMap = {
 const ServerMember: FC<ServerMemberProps> = ({ member, server }) => {
   const params = useParams();
   const router = useRouter();
-
+  // @ts-ignore
   const icon = roleIconMap[member.role];
 
   const onClick = () => {
@@ -40,7 +40,7 @@ const ServerMember: FC<ServerMemberProps> = ({ member, server }) => {
       )}
     >
       <UserAvatar
-        src={member.profile.imageUrl}
+        src={member.ud_profileid_c5c586.ud_imageurl_ee9d25?.url || ''}
         className="w-8 h-8 md:h-8 md:w-8"
       />
       <p
@@ -50,7 +50,7 @@ const ServerMember: FC<ServerMemberProps> = ({ member, server }) => {
             'text-primary dark:text-zinc-200 dark:group-hover:text-white'
         )}
       >
-        {member.profile.name}
+        {member.ud_profileid_c5c586.name}
       </p>
       {icon}
     </button>

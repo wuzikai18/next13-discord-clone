@@ -87,7 +87,7 @@ const CreateChannelModal = () => {
       router.refresh();
       onClose();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

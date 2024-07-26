@@ -4,6 +4,10 @@ import { MemberRole } from '@prisma/client';
 import { NextApiResponseServerIo } from '@/types';
 import { currentProfilePages } from '@/lib/current-profile-pages';
 import { db } from '@/lib/db';
+import { findServer } from '@/graphql/server/queries';
+import { findChannel } from '@/graphql/channel/queries';
+import { createMessage } from '@/graphql/message/mutations';
+import { findMessage } from '@/graphql/message/queries';
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,29 +34,32 @@ export default async function handler(
       return res.status(400).json({ error: 'Channel ID missing' });
     }
 
-    const server = await db.server.findFirst({
-      where: {
-        id: serverId as string,
-        members: {
-          some: {
-            profileId: profile.id,
-          },
-        },
-      },
-      include: {
-        members: true,
-      },
-    });
-
+    // const server = await db.server.findFirst({
+    //   where: {
+    //     id: serverId as string,
+    //     members: {
+    //       some: {
+    //         profileId: profile.id,
+    //       },
+    //     },
+    //   },
+    //   include: {
+    //     members: true,
+    //   },
+    // });
+    const server:any = await findServer(serverId as string);
     if (!server) {
       return res.status(404).json({ error: 'Server not found' });
     }
 
-    const channel = await db.channel.findFirst({
-      where: {
-        id: channelId as string,
-        sreverId: serverId as string,
-      },
+    // const channel = await db.channel.findFirst({
+    //   where: {
+    //     id: channelId as string,
+    //     sreverId: serverId as string,
+    //   },
+    // });
+    const channel = await findChannel({
+      channelId: channelId as string,
     });
 
     if (!channel) {
@@ -60,25 +67,30 @@ export default async function handler(
     }
 
     const member = server.members.find(
-      (member) => member.profileId === profile.id
+      (member:any) => member.profileId === profile.id
     );
 
     if (!member) {
       return res.status(404).json({ error: 'Member not found' });
     }
 
-    let message = await db.message.findFirst({
-      where: {
-        id: messageId as string,
-        channelId: channelId as string,
-      },
-      include: {
-        member: {
-          include: {
-            profile: true,
-          },
-        },
-      },
+    // let message = await db.message.findFirst({
+    //   where: {
+    //     id: messageId as string,
+    //     channelId: channelId as string,
+    //   },
+    //   include: {
+    //     member: {
+    //       include: {
+    //         profile: true,
+    //       },
+    //     },
+    //   },
+    // });
+
+    let message = await findMessage({
+      channelId:channelId as string,
+      limit:1,
     });
 
     if (!message || message.deleted) {
@@ -142,7 +154,7 @@ export default async function handler(
 
     return res.status(200).json(message);
   } catch (error) {
-    console.log('[MESSAGE_ID]', error);
+    //console.log('[MESSAGE_ID]', error);
     return res.status(500).json({ error: 'Internal Error' });
   }
 }

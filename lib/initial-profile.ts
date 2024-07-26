@@ -1,6 +1,7 @@
 import { currentUser, redirectToSignIn } from '@clerk/nextjs';
-
-import { db } from '@/lib/db';
+import { findUnique } from '@/graphql/profile/queries';
+import { createProfile } from '@/graphql/profile/mutations';
+// import { db } from '@/lib/db';
 
 export const initialProfile = async () => {
   const user = await currentUser();
@@ -9,17 +10,14 @@ export const initialProfile = async () => {
     return redirectToSignIn();
   }
 
-  const profile = await db.profile.findUnique({
-    where: {
-      userId: user.id,
-    },
-  });
-
+  const { loading, error, data } = await findUnique(user.id);
+  const profile = data ? data[0] : null;
   if (profile) {
+    // //console.log('profile', profile);
     return profile;
   }
 
-  const newProfile = await db.profile.create({
+  const newProfile = await createProfile({
     data: {
       userId: user.id,
       name: `${user.firstName} ${user.lastName}`,
@@ -27,6 +25,5 @@ export const initialProfile = async () => {
       email: user.emailAddresses[0].emailAddress,
     },
   });
-
   return newProfile;
 };

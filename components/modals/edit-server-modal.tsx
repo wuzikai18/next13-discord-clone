@@ -55,7 +55,7 @@ export const EditServerModal = () => {
   useEffect(() => {
     if (server) {
       form.setValue('name', server.name);
-      form.setValue('imageUrl', server.imageUrl);
+      form.setValue('imageUrl', server.ud_imageurl_8a571f);
     }
   }, [server, form]);
 
@@ -69,7 +69,7 @@ export const EditServerModal = () => {
       router.refresh();
       onClose();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

@@ -29,7 +29,7 @@ const MediaRoom: FC<MediaRoomProps> = ({ audio, chatId, video }) => {
         const data = await resp.json();
         setToken(data.token);
       } catch (e) {
-        console.log(e);
+        //console.log(e);
       }
     })();
   }, [user?.firstName, user?.lastName, chatId]);

@@ -8,6 +8,8 @@ import { ChatMessages } from '@/components/chat/chat-messages';
 import { MediaRoom } from '@/components/media-room';
 import { currentProfile } from '@/lib/current-profile';
 import { db } from '@/lib/db';
+import { findMember } from '@/graphql/member/queries';
+import { findChannel } from '@/graphql/channel/queries';
 
 interface ChannelIdPageProps {
   params: {
@@ -23,19 +25,14 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
     return redirectToSignIn();
   }
 
-  const channel = await db.channel.findUnique({
-    where: {
-      id: params.channelId,
-    },
+  const channel = await findChannel({
+    channelId: params.channelId,
   });
 
-  const member = await db.member.findFirst({
-    where: {
-      serverId: params.serverId,
-      profileId: profile.id,
-    },
+  const member = await findMember({
+    serverId: params.serverId,
+    userId: profile.id,
   });
-
   if (!channel || !member) {
     redirect('/');
   }
@@ -44,7 +41,7 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
       <ChatHeader
         name={channel.name}
-        serverId={channel.sreverId}
+        serverId={channel.ud_serverid_server_521f66}
         type="channel"
       />
       {channel.type === ChannelType.TEXT && (
@@ -58,7 +55,7 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
             socketUrl="/api/socket/messages"
             socketQuery={{
               channelId: channel.id,
-              serverId: channel.sreverId,
+              serverId: channel.ud_serverid_server_521f66,
             }}
             paramKey="channelId"
             paramValue={channel.id}
@@ -69,7 +66,7 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
             apiUrl="/api/socket/messages"
             query={{
               channelId: channel.id,
-              serverId: channel.sreverId,
+              serverId: channel.ud_serverid_server_521f66,
             }}
           />
         </>

@@ -2,6 +2,7 @@ import { currentProfile } from '@/lib/current-profile';
 import { db } from '@/lib/db';
 import { Message } from '@prisma/client';
 import { NextResponse } from 'next/server';
+import { findMessage } from '@/graphql/message/queries';
 
 const MESSAGES_BATCH = 10;
 
@@ -22,46 +23,37 @@ export async function GET(req: Request) {
 
     let messages: Message[] = [];
 
-    if (cursor) {
-      messages = await db.message.findMany({
-        take: MESSAGES_BATCH,
-        skip: 1,
-        cursor: {
-          id: cursor,
-        },
-        where: {
-          channelId,
-        },
-        include: {
-          member: {
-            include: {
-              profile: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-    } else {
-      messages = await db.message.findMany({
-        take: MESSAGES_BATCH,
-        skip: 1,
-        where: {
-          channelId,
-        },
-        include: {
-          member: {
-            include: {
-              profile: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-    }
+    // if (cursor) {
+    //   messages = await db.message.findMany({
+    //     take: MESSAGES_BATCH,
+    //     skip: 1,
+    //     cursor: {
+    //       id: cursor,
+    //     },
+    //     where: {
+    //       channelId,
+    //     },
+    //     include: {
+    //       member: {
+    //         include: {
+    //           profile: true,
+    //         },
+    //       },
+    //     },
+    //     orderBy: {
+    //       createdAt: 'desc',
+    //     },
+    //   });
+    // } else {
+    //   messages = await findMessage({
+    //     channelId:channelId,
+    //     limit:MESSAGES_BATCH,
+    //   });
+    // }
+    messages = await findMessage({
+          channelId:channelId,
+          limit:MESSAGES_BATCH,
+        });
     let nextCursor = null;
     if (messages.length === MESSAGES_BATCH) {
       nextCursor = messages[MESSAGES_BATCH - 1].id;
@@ -72,7 +64,7 @@ export async function GET(req: Request) {
       nextCursor,
     });
   } catch (error) {
-    console.log('[MESSAGES_GET]', error);
+    //console.log('[MESSAGES_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

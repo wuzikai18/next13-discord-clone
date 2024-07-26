@@ -86,6 +86,8 @@ const ChatMessages: FC<ChatMessagesProps> = ({
     );
   }
 
+  console.log(data,'socketData')
+
   return (
     <div ref={chatRef} className="flex flex-col flex-1 py-4 overflow-y-auto">
       {!hasNextPage && <div className="flex-1" />}
@@ -107,17 +109,19 @@ const ChatMessages: FC<ChatMessagesProps> = ({
       <div className="flex flex-col-reverse mt-auto">
         {data?.pages?.map((group, i) => (
           <Fragment key={i}>
-            {group.items.map((message: MessageWithMemberWithProfile) => (
+            {group.items.filter((item:any) =>{
+              return item
+            }).map((message: any) => (
               <ChatItem
-                key={message.id}
-                id={message.id}
+                key={message?.id}
+                id={message?.id}
                 currentMember={member}
-                member={message.member}
-                content={message.content}
-                fileUrl={message.fileUrl}
-                deleted={message.deleted}
-                timestamp={format(new Date(message.createdAt), DATE_FORMAT)}
-                isUpdated={message.updatedAt !== message.createdAt}
+                member={message?.ud_memberid_f7fb6b}
+                content={message?.content}
+                fileUrl={message?.fileUrl}
+                deleted={message?.deleted}
+                timestamp={format(new Date(message?.created_at), DATE_FORMAT)}
+                isUpdated={message?.updatedAt !== message?.created_at}
                 socketUrl={socketUrl}
                 socketQuery={socketQuery}
               />

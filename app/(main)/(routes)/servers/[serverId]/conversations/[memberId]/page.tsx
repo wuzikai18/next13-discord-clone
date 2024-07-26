@@ -8,6 +8,7 @@ import { MediaRoom } from '@/components/media-room';
 import { getOrCreateConversation } from '@/lib/conversation';
 import { currentProfile } from '@/lib/current-profile';
 import { db } from '@/lib/db';
+import { findMember } from '@/graphql/member/queries';
 
 interface MemberIdPageProps {
   params: {
@@ -29,15 +30,17 @@ const MemberIdPage = async ({
     return redirectToSignIn();
   }
 
-  const currentMember = await db.member.findFirst({
-    where: {
-      serverId,
-      profileId: profile.id,
-    },
-    include: {
-      profile: true,
-    },
-  });
+  // const currentMember = await db.member.findFirst({
+  //   where: {
+  //     serverId,
+  //     profileId: profile.id,
+  //   },
+  //   include: {
+  //     profile: true,
+  //   },
+  // });
+
+  const currentMember = await findMember({serverId, userId:profile.id});
 
   if (!currentMember) {
     return redirect('/');

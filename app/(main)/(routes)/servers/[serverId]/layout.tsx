@@ -18,17 +18,8 @@ const ServerIdLayout = async ({
     return redirectToSignIn();
   }
 
-  const server = await db.server.findUnique({
-    where: {
-      id: params.serverId,
-      members: {
-        some: {
-          profileId: profile.id,
-        },
-      },
-    },
-  });
-
+  const server = profile.servers.find((s:any)=>s.id.toString()===params.serverId);
+  //console.log('server', server);
   if (!server) {
     return redirect('/');
   }

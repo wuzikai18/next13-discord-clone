@@ -22,13 +22,13 @@ import { cn } from '@/lib/utils';
 interface ChatItemProps {
   id: string;
   content: string;
-  member: Member & {
-    profile: Profile;
+  member: any & {
+    profile: any;
   };
   timestamp: string;
   fileUrl: string | null;
   deleted: boolean;
-  currentMember: Member;
+  currentMember: any;
   isUpdated: boolean;
   socketUrl: string;
   socketQuery: Record<string, string>;
@@ -102,7 +102,7 @@ const ChatItem: FC<ChatItemProps> = ({
       form.reset();
       setIsEditing(false);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -130,7 +130,7 @@ const ChatItem: FC<ChatItemProps> = ({
           onClick={onMemberClick}
           className="transition cursor-pointer hover:drop-shadow-md"
         >
-          <UserAvatar src={member.profile.imageUrl} />
+          <UserAvatar src={member.ud_profileid_c5c586?.ud_imageurl_ee9d25?.url} />
         </div>
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
@@ -139,9 +139,10 @@ const ChatItem: FC<ChatItemProps> = ({
                 onClick={onMemberClick}
                 className="text-sm font-semibold cursor-pointer hover:underline"
               >
-                {member.profile.name}
+                {member.ud_profileid_c5c586.name}
               </p>
               <ActionTooltip label={member.role}>
+                {/* @ts-ignore */}
                 {roleIconMap[member.role]}
               </ActionTooltip>
             </div>

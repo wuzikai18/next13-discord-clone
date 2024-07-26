@@ -11,6 +11,7 @@ import { ServerSearch } from './server-search';
 import { ServerSection } from './server-section';
 import { ServerChannel } from './server-channel';
 import { ServerMember } from './server-member';
+import { findServer } from '@/graphql/server/queries';
 
 interface ServerSidebarProps {
   serverId: string;
@@ -36,44 +37,48 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
     return redirect('/');
   }
 
-  const server = await db.server.findUnique({
-    where: {
-      id: serverId,
-    },
-    include: {
-      channels: {
-        orderBy: {
-          createdAt: 'asc',
-        },
-      },
-      members: {
-        include: {
-          profile: true,
-        },
-        orderBy: {
-          role: 'asc',
-        },
-      },
-    },
-  });
+  // const server = await db.server.findUnique({
+  //   where: {
+  //     id: serverId,
+  //   },
+  //   include: {
+  //     channels: {
+  //       orderBy: {
+  //         createdAt: 'asc',
+  //       },
+  //     },
+  //     members: {
+  //       include: {
+  //         profile: true,
+  //       },
+  //       orderBy: {
+  //         role: 'asc',
+  //       },
+  //     },
+  //   },
+  // });
+
+  const server:any = await findServer(serverId);
+
+  //console.log('server', server);
   const textChannels = server?.channels.filter(
-    (channel) => channel.type === ChannelType.TEXT
+    (channel:any) => channel.type === ChannelType.TEXT
   );
   const audioChannels = server?.channels.filter(
-    (channel) => channel.type === ChannelType.AUDIO
+    (channel:any) => channel.type === ChannelType.AUDIO
   );
   const videoChannels = server?.channels.filter(
-    (channel) => channel.type === ChannelType.VIDEO
+    (channel:any) => channel.type === ChannelType.VIDEO
   );
   const members = server?.members.filter(
-    (member) => member.profileId !== profile.id
+    (member:any) => member.ud_profileid_profile_677433 !== profile.id
   );
 
   if (!server) {
     return redirect('/');
   }
   const role = server.members.find(
-    (member) => member.profileId === profile.id
+    (member:any) => member.ud_profileid_profile_677433 === profile.id
   )?.role;
 
   return (
@@ -86,36 +91,40 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               {
                 label: 'Text Channels',
                 type: 'channel',
-                data: textChannels?.map((channel) => ({
+                data: textChannels?.map((channel:any) => ({
                   id: channel.id,
                   name: channel.name,
+                  // @ts-ignore
                   icon: iconMap[channel.type],
                 })),
               },
               {
                 label: 'Voice Channels',
                 type: 'channel',
-                data: audioChannels?.map((channel) => ({
+                data: audioChannels?.map((channel:any) => ({
                   id: channel.id,
                   name: channel.name,
+                  // @ts-ignore
                   icon: iconMap[channel.type],
                 })),
               },
               {
                 label: 'Video Channels',
                 type: 'channel',
-                data: videoChannels?.map((channel) => ({
+                data: videoChannels?.map((channel:any) => ({
                   id: channel.id,
                   name: channel.name,
+                  // @ts-ignore
                   icon: iconMap[channel.type],
                 })),
               },
               {
                 label: 'Members',
                 type: 'member',
-                data: members?.map((member) => ({
+                data: members?.map((member:any) => ({
                   id: member.id,
-                  name: member.profile.name,
+                  name: member.ud_profileid_c5c586.name,
+                  // @ts-ignore
                   icon: roleIconMap[member.role],
                 })),
               },
@@ -132,7 +141,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               label="Text Channels"
             />
             <div className="space-y-[2px]">
-              {textChannels.map((channel) => (
+              {textChannels.map((channel:any) => (
                 <ServerChannel
                   key={channel.id}
                   channel={channel}
@@ -152,7 +161,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               label="Voice Channels"
             />
             <div className="space-y-[2px]">
-              {audioChannels.map((channel) => (
+              {audioChannels.map((channel:any) => (
                 <ServerChannel
                   key={channel.id}
                   channel={channel}
@@ -172,7 +181,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               label="Video Channels"
             />
             <div className="space-y-[2px]">
-              {videoChannels.map((channel) => (
+              {videoChannels.map((channel:any) => (
                 <ServerChannel
                   key={channel.id}
                   channel={channel}
@@ -192,7 +201,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               server={server}
             />
             <div className="space-y-[2px]">
-              {members.map((member) => (
+              {members.map((member:any) => (
                 <ServerMember key={member.id} member={member} server={server} />
               ))}
             </div>

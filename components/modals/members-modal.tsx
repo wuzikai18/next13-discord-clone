@@ -68,7 +68,7 @@ const MembersModal = () => {
       router.refresh();
       onOpen('members', { server: response.data });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     } finally {
       setLoadingId('');
     }
@@ -89,7 +89,7 @@ const MembersModal = () => {
       router.refresh();
       onOpen('members', { server: response.data });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     } finally {
       setLoadingId('');
     }
@@ -107,17 +107,18 @@ const MembersModal = () => {
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="mt-8 max-h-[420px] pr-6">
-          {server?.members?.map((member) => (
+          {server?.members?.map((member:any) => (
             <div key={member.id} className="flex items-center mb-6 gap-x-2">
-              <UserAvatar src={member.profile.imageUrl} />
+              <UserAvatar src={member.ud_profileid_c5c586?.ud_imageurl_ee9d25?.url} />
               <div className="flex flex-col gap-y-1">
                 <div className="flex items-center text-xs font-semibold gap-x-1">
-                  {member.profile.name}
+                  {member.ud_profileid_c5c586.name}
+                  {/* @ts-ignore */}
                   {roleIconMap[member.role]}
                 </div>
-                <p className="text-xs text-zinc-500">{member.profile.email}</p>
+                <p className="text-xs text-zinc-500">{member.ud_profileid_c5c586.email}</p>
               </div>
-              {server.profileId !== member.profileId &&
+              {server.profileId !== member.ud_profileid_profile_677433 &&
                 loadingId !== member.id && (
                   <div className="ml-auto">
                     <DropdownMenu>

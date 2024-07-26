@@ -15,27 +15,28 @@ const NavigationSidebar = async () => {
   if (!profile) {
     redirect('/');
   }
-  const servers = await db.server.findMany({
-    where: {
-      members: {
-        some: {
-          profileId: profile?.id,
-        },
-      },
-    },
-  });
-
+  // const servers = await db.server.findMany({
+  //   where: {
+  //     members: {
+  //       some: {
+  //         profileId: profile?.id,
+  //       },
+  //     },
+  //   },
+  // });
+  const servers = profile.members.map((m:any)=>m.ud_serverid_a7bb35);
+  // console.log('servers', servers);
   return (
     <div className="space-y-4 flex flex-col items-center h-full text-primary w-full dark:bg-[#1E1F22] bg-[#E3E5E8] py-3">
       <NavigationAction />
       <Separator className="h-[2px] bg-zinc-300 dark:bg-zinc-700 rounded-md w-10 mx-auto" />
       <ScrollArea className="flex-1 w-full">
-        {servers.map((server) => (
+        {servers.map((server:any) => (
           <div key={server.id} className="mb-4">
             <NavigationItem
               id={server.id}
               name={server.name}
-              imageUrl={server.imageUrl}
+              imageUrl={server.ud_imageurl_8a571f}
             />
           </div>
         ))}
